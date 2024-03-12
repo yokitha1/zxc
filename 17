@@ -1,0 +1,718 @@
+ibdex.asp
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РСОИ_Пр№17_Шилов</title>
+    <style>
+        *{
+            font-family: 'Century Gothic';
+            margin: 0 auto;
+        }
+
+        .cont_a{
+            width: 40%;
+            height: auto;
+            display: block;
+            margin-bottom: 16px;
+            margin-left: 8px;
+            margin-right: 8px;
+        }
+
+        a {
+            display: block;
+            font-weight: 100;
+            color: white;
+            background: lightseagreen;
+            padding: 30px;
+            font-size: 24pt;
+            transition: all 0.7s ease;
+            text-decoration: none;
+        }
+
+
+        a:hover{
+            background: rgb(84, 139, 235);
+            transform: scale(1.04);
+        }
+
+        .menu {
+            position: relative;
+            top: 50px;
+            display: flex;
+            justify-content: center;
+            max-width: 1600px;
+            height: auto;
+            flex-wrap: wrap;
+        }
+
+        .page_name{
+            max-width: 1920px;
+            background: lightseagreen;
+            color: white;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+
+        <div class="page_name">
+            <h1>Бухгалтерия (расчет стипендии)</h1>
+        </div>
+
+        <div class="menu">
+
+            <div class="cont_a">
+                <a href="ASP\group.asp" target="_self">Группы</a>
+            </div>
+
+            <div class="cont_a">
+                <a href="ASP\student.asp" target="_self">Студенты</a>
+            </div>
+
+            <div class="cont_a">
+                <a href="ASP\session.asp" target="_self">Сессия</a>
+            </div>
+
+        </div>
+    </center>
+</body>
+</html>
+
+
+
+
+ASP
+
+
+group
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <title>РСОИ_Пр№17_Группы</title>
+    <style>
+        * {
+            margin: 0;
+            font-family: 'Century Gothic';
+        }
+
+        table {
+            border: 1px solid lightseagreen;
+        }
+
+        th {
+            background-color: lightseagreen;
+            padding: 5px;
+            color: white;
+        }
+
+        .cont_tbl_itg {
+            background-color: lightseagreen;
+            padding: 5px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+
+        .btn{
+            width: 100%;
+            padding: 10px;
+            border: none;
+            color: white;
+            background-color: lightseagreen;
+            font-size: 16pt;
+            transition: all 0.7s ease;
+        }
+
+        .btn:hover {
+            background: rgb(84, 139, 235);
+            transform: scale(1.05);
+        }
+
+
+
+        .cont {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1920px;
+            height: auto;
+        }
+
+        .cont_tbl {
+            padding: 20px;
+            display: block;
+        }
+
+        .cont_add {
+            padding: 20px;
+            display: block;
+        }
+
+        .class_first {
+            background-color: white;
+        }
+
+        .class_second {
+            background-color: rgb(168, 225, 243);
+        }
+
+        .page_name {
+            max-width: 1920px;
+            background: lightseagreen;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+        
+    </style>
+</head>
+
+<body>
+    <form name="f1" method="POST" action="group_add.asp">
+        <div class="page_name">
+            <h1>Группы</h1>
+        </div>
+
+        <div class="cont">
+            <div class="cont_tbl">
+                <%
+                Dim Conn 
+                Set Conn=Server.CreateObject("ADODB.Connection") 
+                Dim dbpath
+                    dbpath=Server.MapPath("PR17.accdb") 
+                    Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & dbpath 
+                    Dim RS 
+                    Set RS=Server.CreateObject("ADODB.Recordset") 
+                    Dim strSQL
+                    strSQL="SELECT * FROM tbl_s_groups" 
+                    RS.Open strSQL, Conn, 3, 3 
+                    If RS.BOF=True Or RS.EOF=True Then 
+                    Response.Write("<br>данные отсутствуют<br>")
+                    Else
+                    RS.MoveLast
+                    RS.MoveFirst
+                    Response.Write("<table><tr><th>ID группы</th><th>Название группы</th></tr>")
+                        dim class_asp
+                        class_asp="class_second"
+                        Do While Not RS.EOF
+                        If RS.BOF = True Or RS.EOF = True Then Exit Do
+                        if class_asp="class_second" then
+                            class_asp="class_first"
+                        Else
+                            class_asp="class_second"
+                        end if
+                        Response.Write("<tr class='" & class_asp & "'>")
+                        Response.Write("<td>" & RS.Fields("id_group") & "</td>")
+                        Response.Write("<td>" & RS.Fields("Group_name") & "</td></tr>")
+                        RS.MoveNext
+                        Loop
+                        Response.Write("<tr><td class='cont_tbl_itg' colspan='2'> Всего записей в таблице: " & RS.RecordCount & " </td></tr></table>")
+                    End If
+                    RS.Close
+                    Set rs=Nothing 
+                    Set Conn=Nothing
+                %>
+            </div>
+            <div class="cont_add">
+            <table>
+                <tr>
+                    <td>Название группы:</td><td><input name="group_input"></td>
+                </tr>
+            </table>
+            <br>
+            <input class="btn" type="submit"><br><br>
+            <A HREF="../INDEX.HTML"><input class="btn" type="button" value="Назад"></A>
+            </div>
+        </div>
+    </form>
+</body>
+
+</html>
+
+
+group_add
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Группа добавление</title>
+</head>
+<body>
+    <%
+    dim per_group 
+    per_group=""  
+    per_group=Request.Form("group_input")
+    if per_group="" then
+    %>
+    <script type="text/javascript">
+    alert("Пустое поле!")
+    parent.location = 'student.asp'
+    </script>
+    <%
+    else 
+        Set Conn=Server.CreateObject("ADODB.Connection")
+        Set rs=Server.CreateObject("ADODB.Recordset")
+        strDBPath=Server.MapPath("PR17.accdb")
+
+        Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & strDBPath
+        RS.Open "tbl_s_groups", Conn, 3, 3 
+        rs.AddNew () 
+        rs.Fields("Group_name")=per_group 
+        rs.Update 
+        rs.Close
+        Conn.Close 
+        Set rs=Nothing 
+        Set Conn=Nothing
+    end if 
+    %>
+    <script type="text/javascript">
+    alert("Сохранено!")
+    parent.location = 'group.asp'
+    </script>
+</body>
+</html>
+
+
+
+session
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>РСОИ_Пр№17_Сессия</title>
+    <style>
+        * {
+            margin: 0;
+            font-family: 'Century Gothic';
+        }
+
+        table {
+            border: 1px solid lightseagreen;
+        }
+
+        th {
+            background-color: lightseagreen;
+            padding: 5px;
+            color: white;
+        }
+
+        .cont_tbl_itg {
+            background-color: lightseagreen;
+            padding: 5px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+
+        .btn{
+            width: 100%;
+            padding: 10px;
+            border: none;
+            color: white;
+            background-color: lightseagreen;
+            font-size: 16pt;
+            transition: all 0.7s ease;
+        }
+
+        .btn:hover {
+            background: rgb(84, 139, 235);
+            transform: scale(1.05);
+        }
+
+
+
+        .cont {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1920px;
+            height: auto;
+        }
+
+        .cont_tbl {
+            padding: 20px;
+            display: block;
+        }
+
+        .cont_add {
+            padding: 20px;
+            display: block;
+        }
+
+        .class_first {
+            background-color: white;
+        }
+
+        .class_second {
+            background-color: rgb(168, 225, 243);
+        }
+
+        .page_name {
+            max-width: 1920px;
+            background: lightseagreen;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<form name="f1" method="post" action="session_add.asp">
+    <div class="page_name">
+        <h1>Сессия</h1>
+    </div>
+
+    <div class="cont">
+        <div class="cont_tbl">
+            <%
+            Dim Conn 
+            Set Conn=Server.CreateObject("ADODB.Connection") 
+            Dim dbpath
+                dbpath=Server.MapPath("PR17.accdb") 
+                Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & dbpath 
+                Dim RS 
+                Set RS=Server.CreateObject("ADODB.Recordset") 
+                RS.Open "qr_j_session", Conn, 3, 3 
+                If RS.BOF=True Or RS.EOF=True Then 
+                Response.Write("<br>данные отсутствуют<br>")
+                Else
+                RS.MoveLast
+                RS.MoveFirst
+                Response.Write("<table><tr><th>ID Студента</th><th>ФИО</th><th>Сессия</th></tr>")
+                    dim class_asp
+                    class_asp="class_second"
+                    Do While Not RS.EOF
+                    If RS.BOF = True Or RS.EOF = True Then Exit Do
+                    if class_asp="class_second" then
+                        class_asp="class_first"
+                    Else
+                        class_asp="class_second"
+                    end if
+                    Response.Write("<tr class='" & class_asp & "'>")
+                    Response.Write("<td>" & RS.Fields("id_ses") & "</td>")
+                    Response.Write("<td>" & RS.Fields("FIO") & "</td>")
+                    Response.Write("<td>" & RS.Fields("Session") & "</td></tr>")
+                    RS.MoveNext
+                    Loop
+                    Response.Write("<tr><td class='cont_tbl_itg' colspan='3'> Всего записей в таблице: " & RS.RecordCount & " </td></tr></table>")
+                End If
+                RS.Close
+            %>
+        </div>
+        <div class="cont_add">
+            <table>
+                
+                <tr>
+                    <td>Группа студента:</td>
+                    <td>
+                        <select name="student_input">
+                            <%
+                            rs.Open "tbl_r_students", conn, 3,3
+                            set objId = rs.Fields("id_student")
+                            set objGroup = rs.Fields("FIO")
+                            do until rs.EOF 
+                            %>
+
+                            <option value="<%response.write(objId)%>"> 
+                                <%response.write(objGroup)%>
+                            </option> 
+
+                            <%
+                            rs.MoveNext
+                            loop
+                            rs.Close
+                            %>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>Сессия:</td>
+                    <td>
+                        <select name="ses_imput">
+                            <option value="Сдал на 5">Сдал на 5</option>
+                            <option value="Сдал на 4-5">Сдал на 4-5</option>
+                            <option value="Сдал на 3">Сдал на 3</option>
+                            <option value="Не сдал">Не сдал</option>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <input class="btn" type="submit"><br><br>
+            <A HREF="../INDEX.HTML"><input class="btn" type="button" value="Назад"></A>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+
+
+
+
+
+
+
+session_add
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Сессия добавление</title>
+</head>
+<body>
+    <%
+    dim per_stud
+    dim per_ses
+    per_stud=""
+    per_group=""
+    per_stud=Request.Form("student_input")  
+    per_ses=Request.Form("ses_imput") 
+    if per_ses="" or per_stud="" then
+    %>
+    <script type="text/javascript">
+    alert("Пустое поле!")
+    parent.location = 'session.asp'
+    </script>
+    <%
+    else 
+        Set Conn=Server.CreateObject("ADODB.Connection")
+        Set rs=Server.CreateObject("ADODB.Recordset")
+        strDBPath=Server.MapPath("PR17.accdb")
+        Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & strDBPath
+        RS.Open "tbl_j_ses", Conn, 3, 3 
+        rs.AddNew () 
+        rs.Fields(1)=per_stud
+        rs.Fields(2)=per_ses 
+        rs.Update 
+        rs.Close
+        Conn.Close 
+        Set rs=Nothing 
+        Set Conn=Nothing
+    end if 
+    %>
+    <script type="text/javascript">
+    alert("Сохранено!")
+    parent.location = 'session.asp'
+    </script>
+</body>
+</html>
+
+
+student
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>РСОИ_Пр№17_Студенты</title>
+    <style>
+        * {
+            margin: 0;
+            font-family: 'Century Gothic';
+        }
+
+        table {
+            border: 1px solid lightseagreen;
+        }
+
+        th {
+            background-color: lightseagreen;
+            padding: 5px;
+            color: white;
+        }
+
+        .cont_tbl_itg {
+            background-color: lightseagreen;
+            padding: 5px;
+            font-weight: bold;
+            color: white;
+            text-align: center;
+        }
+
+        .btn{
+            width: 100%;
+            padding: 10px;
+            border: none;
+            color: white;
+            background-color: lightseagreen;
+            font-size: 16pt;
+            transition: all 0.7s ease;
+        }
+
+        .btn:hover {
+            background: rgb(84, 139, 235);
+            transform: scale(1.05);
+        }
+
+
+
+        .cont {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: 1920px;
+            height: auto;
+        }
+
+        .cont_tbl {
+            padding: 20px;
+            display: block;
+        }
+
+        .cont_add {
+            padding: 20px;
+            display: block;
+        }
+
+        .class_first {
+            background-color: white;
+        }
+
+        .class_second {
+            background-color: rgb(168, 225, 243);
+        }
+
+        .page_name {
+            max-width: 1920px;
+            background: lightseagreen;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<form name="f1" method="post" action="student_add.asp">
+    <div class="page_name">
+        <h1>Студенты</h1>
+    </div>
+
+    <div class="cont">
+        <div class="cont_tbl">
+            <%
+            Dim Conn 
+            Set Conn=Server.CreateObject("ADODB.Connection") 
+            Dim dbpath
+                dbpath=Server.MapPath("PR17.accdb") 
+                Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & dbpath 
+                Dim RS 
+                Set RS=Server.CreateObject("ADODB.Recordset") 
+                Dim strSQL
+                strSQL="SELECT tbl_r_students.id_student, tbl_r_students.FIO, tbl_s_groups.Group_name FROM tbl_s_groups INNER JOIN tbl_r_students ON tbl_s_groups.id_group = tbl_r_students.Group Order by tbl_r_students.id_student;" 
+                RS.Open strSQL, Conn, 3, 3
+                If RS.BOF=True Or RS.EOF=True Then 
+                Response.Write("<br>данные отсутствуют<br>")
+                Else
+                RS.MoveLast
+                RS.MoveFirst
+                Response.Write("<table><tr><th>ID Студента</th><th>ФИО</th><th>Сессия</th></tr>")
+                    dim class_asp
+                    class_asp="class_second"
+                    Do While Not RS.EOF
+                    If RS.BOF = True Or RS.EOF = True Then Exit Do
+                    if class_asp="class_second" then
+                        class_asp="class_first"
+                    Else
+                        class_asp="class_second"
+                    end if
+                    Response.Write("<tr class='" & class_asp & "'>")
+                    Response.Write("<td>" & RS.Fields("id_student") & "</td>")
+                    Response.Write("<td>" & RS.Fields("FIO") & "</td>")
+                    Response.Write("<td>" & RS.Fields("Group_name") & "</td></tr>")
+                    RS.MoveNext
+                    Loop
+                    Response.Write("<tr><td class='cont_tbl_itg' colspan='3'> Всего записей в таблице: " & RS.RecordCount & " </td></tr></table>")
+                End If
+                RS.Close
+            %>
+        </div>
+        <div class="cont_add">
+            <table>
+                <tr>
+                    <td>ФИО студента:</td><td><input name="fio_input"></td>
+                </tr>
+                <tr>
+                    <td>Группа студента:</td>
+                    <td>
+                        <select name="group_input">
+                            <%
+                            rs.Open "tbl_s_groups", conn, 3,3
+                            set objId = rs.Fields("id_group")
+                            set objGroup = rs.Fields("Group_name")
+                            do until rs.EOF 
+                            %>
+
+                            <option value="<%response.write(objId)%>"> 
+                                <%response.write(objGroup)%>
+                            </option> 
+
+                            <%
+                            rs.MoveNext
+                            loop
+                            rs.Close
+                            Set rs=Nothing 
+                            Set Conn=Nothing
+                            %>
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <br>
+            <input class="btn" type="submit"><br><br>
+            <A HREF="../INDEX.HTML"><input class="btn" type="button" value="Назад"></A>
+        </div>
+    </div>
+</form>
+</body>
+</html>
+
+
+
+
+student_add
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Студент добавление</title>
+</head>
+<body>
+    <%
+    dim per_stud
+    dim per_group 
+    per_stud=""
+    per_group=""
+    per_stud=Request.Form("fio_input")  
+    per_group=Request.Form("group_input") 
+    if per_group="" or per_stud="" then
+    %>
+    <script type="text/javascript">
+    alert("Пустое поле!")
+    parent.location = 'student.asp'
+    </script>
+    <%
+    else 
+        Set Conn=Server.CreateObject("ADODB.Connection")
+        Set rs=Server.CreateObject("ADODB.Recordset")
+        strDBPath=Server.MapPath("PR17.accdb")
+
+        Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & strDBPath
+        RS.Open "tbl_r_students", Conn, 3, 3 
+        rs.AddNew () 
+        rs.Fields("FIO")=per_stud
+        rs.Fields("Group")=per_group 
+        rs.Update 
+        rs.Close
+        Conn.Close 
+        Set rs=Nothing 
+        Set Conn=Nothing
+    end if 
+    %>
+    <script type="text/javascript">
+    alert("Сохранено!")
+    parent.location = 'student.asp'
+    </script>
+</body>
+</html>
