@@ -1,0 +1,371 @@
+hard_spec.asp
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>РСОИ_Пр№19_Шилов</title>
+</head>
+<body>
+    <div class="page_name">
+        <h1>Рейтинг сложности предметов</h1>
+    </div>
+
+    <div class="cont">
+            <div class="cont_tbl">
+                <%
+                Dim Conn 
+                Set Conn=Server.CreateObject("ADODB.Connection") 
+                Dim dbpath
+                dbpath=Server.MapPath("db.mdb") 
+                Conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & dbpath 
+                Dim RS 
+                Set RS=Server.CreateObject("ADODB.Recordset") 
+                RS.Open "qr_02", Conn, 3,3
+                If RS.BOF=True Or RS.EOF=True Then 
+                    Response.Write("<br>данные отсутствуют<br>")
+                Else
+                    RS.MoveLast
+                    RS.MoveFirst
+                    Response.Write("<table><tr><th>Место</th><th>Предмет</th><th>Сложность</th></tr>")
+                    dim class_asp
+                    class_asp="class_second"
+                    dim k
+                    k=0
+                    Do While Not RS.EOF
+                        If RS.BOF = True Or RS.EOF = True Then Exit Do
+                        if class_asp="class_second" then
+                            class_asp="class_first"
+                        Else
+                            class_asp="class_second"
+                        end if
+                        k=k+1
+                        Response.Write("<tr class='" & class_asp & "'>")
+                        Response.Write("<td>" & k & " </td>")
+                        Response.Write("<td>" & RS.Fields("disc_name") & "</td>")
+                        Response.Write("<td>" & RS.Fields("Sum-ocenka") & "</td>")
+                        RS.MoveNext
+                        Loop
+                    Response.Write("<tr><td class='cont_tbl_itg' colspan='3'> Всего записей в таблице: " & RS.RecordCount & " <input type='hidden' name='rsc' value='"& RS.RecordCount  &"'></td></tr></table>")
+                End If
+                RS.Close
+                %>
+                <br>
+                <A HREF="index.asp"><input class="btn" type="button" value="Назад"></A>
+            </div>
+    </div>
+</body>
+</html>
+
+
+
+
+index.asp
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>РСОИ_Пр№19_Шилов</title>
+</head>
+<body>
+    <form name="start" action="ocen.asp" method="post">
+    <%
+            Dim Conn 
+            Set Conn=Server.CreateObject("ADODB.Connection") 
+            Dim dbpath
+            dbpath=Server.MapPath("db.mdb") 
+            Conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & dbpath 
+            Dim RS 
+            Set RS=Server.CreateObject("ADODB.Recordset")
+    %>
+    <div class="page_name">
+        <h1>Анкетирование "Шкала трудности учебных дисциплин"</h1>
+    </div>
+
+    <div class="cont">
+        <div class="cont_tbl">
+            <center>
+                <p><br>Цель анкетирования: выявление дисциплин, вызывающих сложность в изучении.</p>
+                <p><br>Выберите номер своей группы из списка и нажмите кнопку "Подача запроса"</p>
+            <BR>
+            <table>
+                <tr>
+                    <td align="right">Номер группы:</td>
+                    <td>
+                        <select name="group_inp">
+                            <%
+                            rs.Open "tbl_c_group", conn, 3,3
+                            set objId = rs.Fields("ID_group")
+                            set objGroup = rs.Fields("Gr_name")
+                            do until rs.EOF 
+                            %>
+
+                            <option value="<%response.write(objGroup)%>"> 
+                                <%response.write(objGroup)%>
+                            </option> 
+
+                            <%
+                            rs.MoveNext
+                            loop
+                            rs.Close
+                            Set rs=Nothing 
+                            Set Conn=Nothing
+                            %>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td align="right">
+                        Семестр:
+                    </td>
+                    <td>
+                        <input type="number" name="semes_inp" value="1" min="1" max="2">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="submit" class="btn" value="Подача запроса">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <A HREF="hard_spec.asp"><input class="btn" type="button" value="Рейтинг предметов"></A>
+                    </td>
+                </tr>
+            </table>
+            </center>
+        </div> 
+    </div> 
+    </form> 
+</body>
+</html>
+
+
+
+
+
+ocen
+<!DOCTYPE html>
+<%
+dim per_group
+dim per_semes
+per_group = Request.form("group_inp")
+per_semes = Request.form("semes_inp")
+%>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>РСОИ_Пр№19_Шилов</title>
+</head>
+<body>
+    <form name="ocenka" action="ocen_add.asp" method="post">
+        <div class="page_name">
+            <h1>Предметы группы <%Response.Write(per_group)%>. Семестр: <%Response.Write(per_semes)%></h1>
+        </div>
+
+        <div class="cont">
+            <div class="cont_tbl">
+                <%
+                Dim Conn 
+                Set Conn=Server.CreateObject("ADODB.Connection") 
+                Dim dbpath
+                dbpath=Server.MapPath("db.mdb") 
+                Conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & dbpath 
+                Dim RS 
+                Set RS=Server.CreateObject("ADODB.Recordset") 
+                Dim strSQL
+                strSQL="SELECT tbl_s_disc.disc_name, tbl_s_prepod.FIO, tbl_c_group.Gr_name, tbl_c_plan.Semestr FROM tbl_s_spec INNER JOIN (tbl_s_prepod INNER JOIN (tbl_s_disc INNER JOIN (tbl_c_group INNER JOIN tbl_c_plan ON tbl_c_group.ID_group = tbl_c_plan.gr_name) ON tbl_s_disc.ID_disc = tbl_c_plan.disc_name) ON tbl_s_prepod.id_prepod = tbl_c_plan.prepod) ON tbl_s_spec.ID_spec = tbl_c_group.spec_name WHERE (((tbl_c_group.Gr_name)='" & per_group & "') AND ((tbl_c_plan.Semestr)='" & per_semes & "'));" 
+                RS.Open strSQL, Conn, 3,3
+                If RS.BOF=True Or RS.EOF=True Then 
+                    Response.Write("<br>данные отсутствуют<br>")
+                Else
+                    RS.MoveLast
+                    RS.MoveFirst
+                    Response.Write("<table><tr><th>Дисциплина</th><th>Преподаватель</th><th>Оценка</th></tr>")
+                    dim class_asp
+                    class_asp="class_second"
+                    dim k
+                    k=0
+                    Do While Not RS.EOF
+                        If RS.BOF = True Or RS.EOF = True Then Exit Do
+                        if class_asp="class_second" then
+                            class_asp="class_first"
+                        Else
+                            class_asp="class_second"
+                        end if
+                        k=k+1
+                        Response.Write("<tr class='" & class_asp & "'>")
+                        Response.Write("<td>" & RS.Fields("disc_name") & " <input type='hidden' name='predmet"& k &"' value='"& RS.Fields("disc_name") &"'></td>")
+                        Response.Write("<td>" & RS.Fields("FIO") & "</td>")
+                        Response.Write("<td> <input type='number' value='1' min='0' max='12' name='ocenka"&k&"'></td>")
+                        RS.MoveNext
+                        Loop
+                    Response.Write("<tr><td class='cont_tbl_itg' colspan='3'> Всего записей в таблице: " & RS.RecordCount & " <input type='hidden' name='rsc' value='"& RS.RecordCount  &"'></td></tr></table>")
+                End If
+                RS.Close
+                %>
+                <br>
+                <A HREF="index.asp"><input class="btn" type="button" value="Назад"></A>
+            </div>
+
+            <div class="cont_add">
+                <input type="submit" value="Сохранить" class="btn"><br><br>
+                <input type="reset" value="Очистить" class="btn">
+            </div>
+            <div class="cont_tbl">
+                <table>
+                    <tr>
+                        <th>Инструкция</th>
+                    </tr>
+                    <tr>
+                        <td>
+                            Поставьте баллы для каждой дисциплины от 1 до 12 и нажмите кнопку "Сохранить".<br>
+                            <b>1-5 баллов:</b><br>
+                            — учебный материал дисциплины не вызывает сложности;<br>
+                            — основной учебный материал выдается на уроке;<br>
+                            — домашнее задание не занимает много времени на подготовку или отсутствует:<br>
+                            <b>4-9 баллов:</b><br>
+                            — учебный материал дисциплины не вызывает большой сложности при должной подготовке домашнего задания.<br>
+                            <b>3-12 баллов:</b><br>
+                            — учебный материал дисциплины сложен для изучения;<br>
+                            — требует систематической подготовки;<br>
+                            — выполнение домашнего задания занимает много времени<br>
+                            `Если какая-либо дисциплина Вами не изучается (например, Английский язык), то нужно поставить оценку 0.
+                        </td>
+                    </tr>
+                </table>
+                </div>
+        </div>
+    </form> 
+</body>
+</html>
+
+ocen_add
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <title>РСОИ_Пр№19_Шилов</title>
+</head>
+<body>
+    <%
+    Set Conn=Server.CreateObject("ADODB.Connection")
+    Set RS=Server.CreateObject("ADODB.Recordset")
+    dbpath=Server.MapPath("db.mdb")
+    Conn.Open "Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" & dbpath
+    RS.Open "tbl_j_ocen", Conn, 3,3
+    rsc = Request.form("rsc")
+    dim m()
+        redim m (2, rsc)
+    for i = 1 to rsc
+        predmet = "predmet" & i 
+        m (1,i) = Request.form(predmet)
+        ocenka = "ocenka" & i
+        m(2,i) = Request.form(ocenka)
+    Next 
+    for i = 1 to rsc
+        rs.addnew()
+        rs.Fields(1)=m(1,i)
+        rs.Fields(2)=m(2,i)
+        rs.update
+    Next
+    RS.Close
+    conn.Close
+    set RS=Nothing
+    set Conn=Nothing
+    %>
+
+    <div class="page_name">
+        <h1>Ваша анкета отправлена!</h1>
+    </div>
+
+    <div class="cont">
+        <div class="cont_tbl">
+            <center>
+                <p><br>Спасибо за участие в анкетировании!</p>
+                <br>
+                <A HREF="index.asp"><input class="btn" type="button" value="Назад"></A>
+            </center>
+        </div>
+    </div>
+</body>
+
+
+
+style.css
+* {
+    margin: 0;
+    font-family: 'Century Gothic';
+}
+
+table {
+    border: 1px solid lightseagreen;
+}
+
+th {
+    background-color: lightseagreen;
+    padding: 5px;
+    color: white;
+}
+
+.cont_tbl_itg {
+    background-color: lightseagreen;
+    padding: 5px;
+    font-weight: bold;
+    color: white;
+    text-align: center;
+}
+
+.btn{
+    width: 100%;
+    padding: 10px;
+    border: none;
+    color: white;
+    background-color: lightseagreen;
+    font-size: 16pt;
+    transition: all 0.7s ease;
+}
+
+.btn:hover {
+    background: rgb(84, 139, 235);
+    transform: scale(1.05);
+}
+
+
+
+.cont {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 1920px;
+    height: auto;
+}
+
+.cont_tbl {
+    padding: 20px;
+    display: block;
+}
+
+.cont_add {
+    padding: 20px;
+    display: block;
+}
+
+.class_first {
+    background-color: white;
+}
+
+.class_second {
+    background-color: rgb(168, 225, 243);
+}
+
+.page_name {
+    max-width: 1920px;
+    background: lightseagreen;
+    color: white;
+    padding: 10px;
+    text-align: center;
+}
