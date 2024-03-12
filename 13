@@ -1,0 +1,148 @@
+index.asp
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="Windows-1251">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>РСОИ_Пр№13_Шилов</title>
+</head>
+
+<body>
+	<form name="f1" method="POST" action="z1.asp">
+		<p>Введите ваше имя:</p>
+		<input type="text" name="fio">
+		<p>Ваш возраст:</p>
+		<label><input type="radio" name="v1" value="v18">До 18 лет</label><br>
+		<label><input type="radio" name="v1" value="v18-27">18-27 лет</label><br>
+		<label><input type="radio" name="v1" value="v27">Старше 27 лет</label><br><br>
+		<input type="submit" value="Выбрать">
+	</form>
+
+	<form name="f2" method="POST" action="z2.asp">
+		<script>
+			function foo_1() {
+				let a1 = document.getElementById("skul_gal").checked;
+				if (a1 == true) {
+					document.getElementById("skul_otziv").disabled = 0
+				}
+				else {
+					document.getElementById("skul_otziv").disabled = 1;
+				}
+			}
+			function foo_2() {
+				let a1 = document.getElementById("hudo_gal").checked;
+				if (a1 == true) {
+					document.getElementById("hudo_otziv").disabled = 0
+				}
+				else {
+					document.getElementById("hudo_otziv").disabled = 1;
+				}
+			}
+		</script>
+
+		<h3>Какие галереи вы посетили?</h3>
+
+		<label></label><input type="checkbox" name="skul_gal" id="skul_gal" onClick="foo_1()"> Скульптурную</label><br>
+		<textarea rows="10" name="skul_otziv" id="skul_otziv" disabled="true"></textarea><br>
+
+
+		<label><input type="checkbox" name="hudo_gal" id="hudo_gal" onClick="foo_2()">Художественную</label><br>
+		<textarea rows="10" name="hudo_otziv" id="hudo_otziv" disabled="true"></textarea><br>
+
+		<input type="submit" value="Выбрать">
+	</form>
+</body>
+
+</html>
+
+
+
+web
+
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <system.webServer>
+        <defaultDocument>
+            <files>
+                <add value="index.asp" />
+            </files>
+        </defaultDocument>
+    </system.webServer>
+</configuration>
+
+
+
+z1
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+<%
+Dim fio
+Dim Voz
+
+fio = Request.form("fio")
+Voz = Request.form("v1")
+Response.Write("<p>Здравствуйте, "& fio &"!</p> <p>Поздравляем Вас с Днем рождения! Желаем творческих успехов!</p>") 
+If Voz = "v18" Then Response.Write("<p>Директор школы</p>") 
+If Voz = "v18-27" Then Response.Write("<p>Военкомат</p>") 
+If Voz = "v27" Then Response.Write("<p>Ваш начальник</p>") 
+
+
+%>
+
+
+
+</body>
+</html>
+
+z2
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<%
+Dim skul_gal
+Dim hudo_gal
+dim skul_otziv
+dim hudo_otziv
+
+skul_gal = Request.form("skul_gal")
+skul_otziv = Request.form("skul_otziv")
+hudo_gal = Request.form("hudo_gal")
+hudo_otziv = Request.form("hudo_otziv")
+
+if skul_gal = "on" then
+Response.Write("<p>Отзыв о посещении <b>скульптурной галереи:</b></p><p> "& skul_otziv &" </p>")
+Application.Lock
+Application("NumVisits_skul") = Application("NumVisits_skul") + 1
+Application.Unlock
+Response.Write("Вы <b>" & Application("NumVisits_skul") & "</b> посетитель скульптурной галереи!")
+End if
+
+if hudo_gal = "on" then
+Response.Write("<p>Отзыв о посещении <b>художественной галереи:</b></p><p> "& hudo_otziv &" </p>")
+Application.Lock
+Application("NumVisits_hudo") = Application("NumVisits_hudo") + 1
+Application.Unlock
+Response.Write("Вы <b>" & Application("NumVisits_hudo") & "</b> посетитель художественной галереи!")
+End if
+
+
+%>
+
+
+
+
+</body>
+</html>
