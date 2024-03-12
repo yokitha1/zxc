@@ -1,0 +1,242 @@
+index.asp
+<form name="f1" method="POST" action="zap.asp">
+	<H1 align="center">Форма регистрации участника
+	</H1>
+	<H1 align="center">Олимпиады по информатике</H1>
+	<P>
+		<TABLE height="98" cellSpacing="1" cellPadding="2" width="840" border="1" align="center">
+			<TR>
+				<TD width="135">Фамилия</TD>
+				<TD width="227">
+					<INPUT type="text" name="Text1"></TD>
+				<TD>Пол</TD>
+			</TR>
+			<TR>
+				<TD width="135">Имя</TD>
+				<TD width="227">
+					<INPUT type="text" name="Text2"></TD>
+				<TD>
+					<label><INPUT type="radio" value="Мужской" name="RadioGroup1">&nbsp;Мужской</label></TD>
+			</TR>
+			<TR>
+				<TD width="135">Отчество</TD>
+				<TD width="227">
+					<INPUT id="Text3" type="text" name="Text3"></TD>
+				<TD>
+					<label><INPUT type="radio" value="Женский" name="RadioGroup1">&nbsp;Женский</label></TD>
+			</TR>
+		</TABLE>
+	</P>
+	<div align="center">
+	<P>Дата рождения <INPUT type="text" size="1" name="Text8">&nbsp;<SELECT id="Select2" name="Select2">
+			<OPTION selected>Январь</OPTION>
+			<OPTION>Февраль</OPTION>
+			<OPTION>Март</OPTION>
+			<OPTION>Апрель</OPTION>
+			<OPTION>Май</OPTION>
+			<OPTION>Июнь</OPTION>
+			<OPTION>Июль</OPTION>
+			<OPTION>Август</OPTION>
+			<OPTION>Сентябрь</OPTION>
+			<OPTION>Октябрь</OPTION>
+			<OPTION>Ноябрь</OPTION>
+			<OPTION>Декабрь</OPTION>
+		</SELECT>&nbsp; <INPUT id="Text9" type="text" name="Text9"></P>
+	<P>Учебное заведение</P>
+	<P><SELECT name="Select1" size="5">
+			<OPTION selected>Котласское речное училище</OPTION>
+			<OPTION>Санкт-Петербургский университет водных коммуникаций</OPTION>
+			<OPTION>Архангельский государственный технический университет</OPTION>
+			<OPTION>Профессиональное училище №20</OPTION>
+		</SELECT></P>
+	<P>Наименование группы <INPUT id="Text4" type="text" size="30" name="Text4"></P>
+	</div>
+	<P>
+		<TABLE height="75" cellSpacing="1" cellPadding="1" width="840" border="1" align="center">
+			<TR>
+				<TD width="350" height="123">Домашний адрес (индекс, область, район, город, улица, 
+					дом, квартира)</TD>
+				<TD height="123"><TEXTAREA id="Textarea1" name="Textarea1" rows="7" cols="55">
+					</TEXTAREA></TD>
+			</TR>
+			<TR>
+				<TD width="350">Телефон</TD>
+				<TD>
+					<INPUT type="text" name="Text5"></TD>
+			</TR>
+			<TR>
+				<TD width="350">Сотовый</TD>
+				<TD>
+					<INPUT type="text" name="Text6"></TD>
+			</TR>
+			<TR>
+				<TD width="350">E-mail</TD>
+				<TD>
+					<INPUT type="text" name="Text7" value="@"></TD>
+			</TR>
+		</TABLE>
+	</P>
+	<P align="center">Предпочитаемые языки программирования</P>
+	<P>
+		<TABLE height="102" cellSpacing="1" cellPadding="1" width="839" border="1" align="center">
+			<TR>
+				<TD width="239">Визуальные</TD>
+				<TD width="210">Процедурные</TD>
+				<TD>Web-программирование</TD>
+			</TR>
+			<TR>
+				<TD width="239">
+					<INPUT type="checkbox" name="Checkbox1">&nbsp;Microsoft Visual Basic</TD>
+				<TD width="210">
+					<INPUT type="checkbox" name="Checkbox4">&nbsp;Quick Basic</TD>
+				<TD>
+					<INPUT type="checkbox" name="Checkbox7">&nbsp;Personal Home Page (PHP)</TD>
+			</TR>
+			<TR>
+				<TD width="239" height="24">
+					<INPUT type="checkbox" name="Checkbox2">&nbsp;&nbsp;Borland Delphi</TD>
+				<TD width="210" height="24">
+					<INPUT type="checkbox" name="Checkbox5">&nbsp;Borland Pascal</TD>
+				<TD height="24">
+					<INPUT type="checkbox" name="Checkbox8">&nbsp;Active Server Pages (ASP)</TD>
+			</TR>
+			<TR>
+				<TD width="239">
+					<INPUT type="checkbox" name="Checkbox3">&nbsp;&nbsp;C++</TD>
+				<TD width="210">
+					<INPUT type="checkbox" name="Checkbox6">&nbsp;Fortran</TD>
+				<TD></TD>
+			</TR>
+		</TABLE>
+	</P>
+	<P align="center">
+		<INPUT id="Submit1" type="submit" value="Submit" name="Submit1"> <INPUT id="Reset1" type="reset" value="Reset" name="Reset1"></P>
+</form>
+
+
+zap.asp
+<html>
+
+<head>
+  <title>Ввод данных в таблицу Актер</title>
+</head>
+
+<body>
+  <% 
+  Dim im 
+  Dim Conn 
+  Dim rs 
+
+  'ФИО переменные'
+  Dim famil
+  dim imya
+  dim otches
+  famil=Request.Form("Text1") 
+  imya=Request.Form("Text2")
+  otches=Request.Form("Text3")
+
+  'Пол переменная'
+  Dim Pol 
+  pol=Request.Form("RadioGroup1")
+
+  'ДР переменные'
+  Dim dr_day
+  dim dr_month
+  dim dr_year
+  dr_day=Request.Form("Text8") 
+  dr_month=Request.Form("Select2") 
+  dr_year=Request.Form("Text9") 
+
+  'УЧЗАВЕД переменная'
+  Dim uchzav
+  uchzav=Request.Form("Select1")
+
+  'Группа переменная'
+  dim group
+  group=Request.Form("Text4")
+
+  'ИНФО переменные'
+  Dim aders
+  dim telefom
+  dim sotovi
+  dim email
+  adres=Request.Form("Textarea1")
+  telefom=Request.Form("Text5")
+  sotovi=Request.Form("Text6")
+  email=Request.Form("Text7")
+
+  'Языки Программирования переменные'
+  Dim prog_1_1
+  Dim prog_1_2
+  Dim prog_1_3
+  Dim prog_2_1
+  Dim prog_2_2
+  Dim prog_2_3
+  Dim prog_3_1
+  Dim prog_3_2
+  prog_1_1=Request.Form("Checkbox1")
+  prog_1_2=Request.Form("Checkbox2")
+  prog_1_3=Request.Form("Checkbox3")
+  prog_2_1=Request.Form("Checkbox4")
+  prog_2_2=Request.Form("Checkbox5")
+  prog_2_3=Request.Form("Checkbox6")
+  prog_3_1=Request.Form("Checkbox7")
+  prog_3_2=Request.Form("Checkbox8")
+
+  Set Conn=Server.CreateObject("ADODB.Connection")
+  Set rs=Server.CreateObject("ADODB.Recordset")
+  strDBPath=Server.MapPath("PR16.accdb")
+
+  Conn.Open "Provider=Microsoft.ACE.OLEDB.12.0;Data Source=" & strDBPath
+  rs.Open "tbl" , Conn, 3, 3 
+  rs.AddNew ()
+
+  'ФИО запись'
+  rs.Fields("Familia")=famil
+  rs.Fields("Imya")=Imya
+  rs.Fields("Otchestvo")=otches
+
+  'Пол запись'
+  rs.Fields("Pol")=Pol
+
+  'ДР запись'
+  rs.Fields("den_rozh")=dr_day
+  rs.Fields("mes_rozh")=dr_month
+  rs.Fields("god_rozh")=dr_year
+
+  'УЧЗАВЕД запись'
+  rs.Fields("ucheb_zaved")=uchzav
+
+  'Группа запись'
+  rs.Fields("gruppa")=group
+
+  'ИНФО запись'
+  rs.Fields("Adres")=adres
+  rs.Fields("Nomer_tel")=telefom
+  rs.Fields("Sotov_tel")=sotovi
+  rs.Fields("E-mail")=email
+
+  'Языки Программирования запись'
+  rs.Fields("MS_Visual_Basic")=prog_1_1
+  rs.Fields("Borland_Delphi")=prog_1_2
+  rs.Fields("C++")=prog_1_3
+  rs.Fields("Quick_Basic")=prog_2_1
+  rs.Fields("Borland_Pascal")=prog_2_2
+  rs.Fields("Fortran")=prog_2_3
+  rs.Fields("PHP")=prog_3_1
+  rs.Fields("ASP")=prog_3_2
+
+  rs.Update 
+  rs.Close
+  Conn.Close 
+
+  Set rs=Nothing 
+  Set Conn=Nothing 
+  %>
+  <script type="text/javascript">
+    alert("Сохранено!")
+    parent.location = 'index.asp'
+  </script>
+</body>
+
+</html>
