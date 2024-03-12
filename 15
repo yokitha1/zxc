@@ -1,0 +1,399 @@
+index.html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>РСОИ_Пр№15_Шилов</title>
+    <script>
+        function fun_stars(){
+            let iur_face_per = document.getElementById("iur_face").value;
+            let inn_per = document.getElementById("inn").value;
+            let kpp_per = document.getElementById("kpp").value;
+            let num_tel_per = document.getElementById("num_tel").value;
+            let fio_per = document.getElementById("fio").value;
+            if(iur_face_per === ""){
+                alert("Поле юридического лица не заполнено!");
+                return false;
+            }
+            else if(inn_per === ""){
+                alert("Поле ИНН не заполнено!");
+                return false;
+            }
+            else if(kpp_per === ""){
+                alert("Поле КПП не заполнено!");
+                return false;
+            }
+            else if(num_tel_per === ""){
+                alert("Поле номера не заполнено!");
+                return false;
+            }
+            else if(fio_per === ""){
+                alert("Поле контактного лица не заполнено!");
+                return false;
+            }
+            }
+    </script>
+</head>
+<body>
+    <form name="f1" method="POST" action="result.asp" target="_blank" onsubmit="return fun_stars()">
+    <h1 align="center">Система выписки счета</h1>
+    <table align="center">
+        <tr>
+            <td align="right">
+                *Полное наименование юридического лица:
+            </td>
+            <td>
+                <input name="iur_face" id="iur_face" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                Местонахождение:
+            </td>
+            <td>
+                <input name="mest_nahod" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                ОГРН:
+            </td>
+            <td>
+                <input name="ogrn" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                *ИНН:
+            </td>
+            <td>
+                <input name="inn" id="inn" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                *КПП:
+            </td>
+            <td>
+                <input name="kpp" id="kpp" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                *Контактный телефон (код) номер:
+            </td>
+            <td>
+                <input name="num_tel" id="num_tel" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                Факс (код) номер:
+            </td>
+            <td>
+                <input name="num_fax" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                *Фамилия Имя Отчество - контактное лицо:
+            </td>
+            <td>
+                <input name="fio" id="fio" size="50">
+            </td>
+        </tr>
+        <tr>
+            <td colspan="2" align="center">
+                Поля отмеченные звездочкой (*)обязательны для заполнения
+            </td>
+        </tr>
+    </table>
+    <br>
+    <table align="center">
+        <th>
+            Перечень услуг
+        </th>
+        <tr>
+            <td>
+                <label><input type="radio" name="usluga" value="10000" checked>Раскопка</label><br>
+                <label><input type="radio" name="usluga" value="5000">Закопка</label><br>
+                <label><input type="radio" name="usluga" value="2000">Доставка</label><br>
+                <br><input type="submit" value="Выдать счет">
+            </td>
+        </tr>
+    </table>
+    </form>
+</body>
+</html>
+
+
+
+
+
+
+
+result.asp
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="Windows-1251">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+font-family: arial;
+        }
+        table, tr, td {
+        border: 1px solid rgb(147, 147, 147);
+        border-collapse: collapse;
+        border-spacing: 0;
+        }
+
+        .tdleft{
+            border:0;
+        }
+        .tdright{
+            border:0;
+        }
+        .tdbottom{
+            border-top:0;
+        }
+
+        .trbottom{
+            border:0;
+        }
+    </style>
+</head>
+<body style="margin: 10px;">
+
+<% 
+Dim org
+org=Request.Form("iur_face")
+
+Dim cont_face
+cont_face=Request.Form("fio")
+
+Dim telefon
+telefon=Request.Form("num_tel")
+
+Dim adres
+adres=Request.form("mest_nahod")
+
+Dim ogrn
+ogrn=Request.form("ogrn")
+
+dim inn
+inn=Request.Form("inn")
+
+dim kpp
+kpp=Request.Form("kpp")
+
+dim usl_cena
+usl_cena=Request.form("usluga")
+dim usl_name
+if usl_cena=10000 then usl_name="Раскопка" end if
+if usl_cena=5000 then usl_name="Закопка" end if
+if usl_cena=2000 then usl_name="Доставка" end if
+
+dim usl_nds
+usl_nds= (usl_cena / 100)*20
+
+dim propis
+if usl_cena=10000 then propis="двенадцать тысяч рублей." end if
+if usl_cena=5000 then propis="шесть тысяч рублей." end if
+if usl_cena=2000 then propis="две тысячи четыреста рублей." end if
+
+%>
+
+<table align="center">
+    <tr>
+        <td colspan="2" colspan="2" align="center">
+            <b>ООО "Детвиль"</b>
+        </td>
+        <td colspan="2" colspan="2" align="right">
+            <b>Адрес: 165311, Россия, г.Котлас, Алтуфьевское шоссе, д. 27<br>
+            Тел/факс: +7(818)337-83-50Б<br>
+            <br>
+            http:detville.ru<br>
+            E-Mail: <b style="color:blue">zakaz@detville,ru</b></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>ОРГАНИЗАЦИЯ</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(org) %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>КОНТАКТНОЕ ЛИЦО</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(cont_face)  %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>ТЕЛЕФОН</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(telefon)  %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>АДРЕС</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(adres) %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>ОГРН</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(ogrn) %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>ИНН</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(inn)  %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" align="center">
+            <B>КПП</B>
+        </td>
+        <td colspan="2" align="right">
+            <b><%Response.Write(kpp) %></b>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <p style="font-size:16pt; padding:0; margin:2%; text-align:center;">Платежное поручение</p>
+        </td>
+    </tr>
+    <tr class="trbottom">
+        <td rowspan="2">
+            <b>Получатель</b>
+        </td>
+        <td class="tdleft">
+            ИНН: <%Response.Write(inn) %><br><br>
+
+        </td>
+        <td class="tdright">
+            КПП: <%Response.Write(kpp) %><br><br>
+        </td>
+        <td rowspan="2">
+            Р/сч 10536005911970000003
+        </td>
+    </tr>
+    <tr class="trbottom">
+        <td colspan="2" class="tdbottom">
+            <%Response.Write(org) %>&nbsp;
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <b>Банк получателя</b>
+        </td>
+        <td>
+            АБ "Газпромбанк" (ЗАО) г. Москва
+        </td>
+        <td>
+            БИК 044525823
+        </td>
+        <TD>
+            К/сч 30101810200000000823
+        </TD>
+    </tr>
+    <tr>
+        <td>
+            <b>Назначение платежа</b>
+        </td>
+        <td colspan="3">
+            <%Response.Write(usl_name)  %>
+        </td>
+    </tr>
+    <tr>
+        <td colspan=4>
+            <%
+            Application.Lock
+            Application("NumSchet") = Application("NumSchet") + 1
+            Application.Unlock
+            Response.Write("<p style='font-size:16pt; padding:0; margin:2%; text-align:center;'>СЧЕТ №" & Application("NumSchet"))
+            %> ОТ <% Response.Write(Day(Now) & "." & Month(Now) & "." & Year(Now) & "г.</p>") %>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <B>ПРЕДМЕТ СЧЕТА</B>
+        </td>
+        <TD>
+            <B>СУММА</B>
+        </TD>
+    </tr>
+    <tr>
+        <td colspan="3">
+            <%Response.Write(usl_name) %>
+        </td>
+        <TD>
+            <%Response.Write(usl_cena) & " руб."%>
+        </TD>
+    </tr>
+    <tr>
+        <td colspan="3" align="right">
+            <B>ИТОГО</B>
+        </td>
+        <TD>
+            <%Response.Write(usl_cena+usl_nds) & " руб." %>
+        </TD>
+    </tr>
+    <tr>
+        <td colspan="3" align="right">
+            <B>в т.ч. НДС 20%</B>
+        </td>
+        <TD>
+            <%Response.Write(usl_nds) & " руб." %>
+        </TD>
+    </tr>
+    <tr>
+        <td colspan="4">
+            <B>ВСЕГО К ОПЛАТЕ: </B><%Response.Write(propis)  %>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Генеральный директор
+        </td>
+        <td colspan="2" align="center" valign="middle">
+            <img src="pechati_07.png" width="100px">
+        </td>
+        <td>
+            С.Е.Скворцов
+        </td>
+    </tr>
+    <tr>
+        <td>
+            Главный бухгалтер
+        </td>
+        <td colspan="2" align="center" valign="middle">
+            <img src="pechati_04.png" width="100px">
+        </td>
+        <td>
+            Д.Е. Шилов
+        </td>
+    </tr>
+</table>
+    
+</body>
+</html>
